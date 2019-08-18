@@ -17,7 +17,7 @@ namespace GraphQL.EntityFramework
             IEnumerable<string> includeNames = null)
             where TReturn : class
         {
-            Guard.AgainstNull(nameof(graph), graph);
+            if (graph == null) throw new ArgumentNullException(nameof(graph));
             var field = BuildNavigationField(name, resolve, includeNames, graphType);
             return graph.AddField(field);
         }
@@ -29,8 +29,8 @@ namespace GraphQL.EntityFramework
             Type graphType)
             where TReturn : class
         {
-            Guard.AgainstNullWhiteSpace(nameof(name), name);
-            Guard.AgainstNull(nameof(resolve), resolve);
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentNullException(nameof(name));
+            if (resolve == null) throw new ArgumentNullException(nameof(resolve));
 
             //lookup the graph type if not explicitly specified
             graphType = graphType ?? GraphTypeFinder.FindGraphType<TReturn>();

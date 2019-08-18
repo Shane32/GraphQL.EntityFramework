@@ -18,7 +18,7 @@ namespace GraphQL.EntityFramework
             IEnumerable<string> includeNames = null)
             where TReturn : class
         {
-            Guard.AgainstNull(nameof(graph), graph);
+            if (graph == null) throw new ArgumentNullException(nameof(graph));
             //graphType should represent the graph type of the enumerated value, not the list graph type
 
             //build the navigation field
@@ -52,8 +52,8 @@ namespace GraphQL.EntityFramework
             IEnumerable<QueryArgument> arguments)
             where TReturn : class
         {
-            Guard.AgainstNullWhiteSpace(nameof(name), name);
-            Guard.AgainstNull(nameof(resolve), resolve);
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentNullException(nameof(name));
+            if (resolve == null) throw new ArgumentNullException(nameof(resolve));
 
             //return the new field type
             return new FieldType

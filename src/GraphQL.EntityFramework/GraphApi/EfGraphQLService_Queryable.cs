@@ -29,7 +29,7 @@ namespace GraphQL.EntityFramework
             IEnumerable<QueryArgument> arguments = null)
             where TReturn : class
         {
-            Guard.AgainstNull(nameof(graph), graph);
+            if (graph == null) throw new ArgumentNullException(nameof(graph));
             var field = BuildQueryFieldAsync(graphType, name, resolve, arguments);
             return graph.AddField(field);
         }
@@ -53,7 +53,7 @@ namespace GraphQL.EntityFramework
             IEnumerable<QueryArgument> arguments = null)
             where TReturn : class
         {
-            Guard.AgainstNull(nameof(graph), graph);
+            if (graph == null) throw new ArgumentNullException(nameof(graph));
             var field = BuildQueryFieldAsync(graphType, name, resolve, arguments);
             return graph.AddField(field);
         }
@@ -76,7 +76,7 @@ namespace GraphQL.EntityFramework
             IEnumerable<QueryArgument> arguments = null)
             where TReturn : class
         {
-            Guard.AgainstNull(nameof(graph), graph);
+            if (graph == null) throw new ArgumentNullException(nameof(graph));
             var field = BuildQueryFieldAsync(graphType, name, resolve, arguments);
             return graph.AddField(field);
         }
@@ -98,8 +98,8 @@ namespace GraphQL.EntityFramework
             Type graphType)
             where TReturn : class
         {
-            Guard.AgainstNullWhiteSpace(nameof(name), name);
-            Guard.AgainstNull(nameof(resolve), resolve);
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentNullException(nameof(name));
+            if (resolve == null) throw new ArgumentNullException(nameof(resolve));
             //lookup the graph type if not explicitly specified
             graphType = graphType ?? GraphTypeFinder.FindGraphType<TReturn>();
             //create a list graph type based on the base field graph type

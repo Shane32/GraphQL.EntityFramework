@@ -10,9 +10,8 @@ namespace GraphQL.EntityFramework
         public static IQueryable<TItem> ApplyGraphQlArguments<TItem, TSource>(this IQueryable<TItem> queryable, ResolveFieldContext<TSource> context, List<string> keyNames = null)
             where TItem : class
         {
-            Guard.AgainstNull(nameof(queryable),queryable);
-            Guard.AgainstNull(nameof(context),context);
-            return ApplyToAll(queryable, (type, x) => context.GetArgument(type, x), keyNames);
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            return ApplyToAll(queryable ?? throw new ArgumentNullException(nameof(queryable)), (type, x) => context.GetArgument(type, x), keyNames);
         }
 
         static IQueryable<TItem> ApplyToAll<TItem>(this IQueryable<TItem> queryable, Func<Type, string, object> getArguments, List<string> keyNames)

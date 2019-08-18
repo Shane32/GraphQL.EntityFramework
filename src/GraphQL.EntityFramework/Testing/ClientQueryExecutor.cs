@@ -14,14 +14,14 @@ namespace GraphQL.EntityFramework.Testing
 
         public static void SetQueryUri(string uri)
         {
-            Guard.AgainstNullWhiteSpace(nameof(uri), uri);
+            if (string.IsNullOrWhiteSpace(uri)) throw new ArgumentNullException(nameof(uri));
             ClientQueryExecutor.uri = uri;
         }
 
         public static Task<HttpResponseMessage> ExecutePost(HttpClient client, string query, object variables = null, Action<HttpHeaders> headerAction = null)
         {
-            Guard.AgainstNull(nameof(client), client);
-            Guard.AgainstNullWhiteSpace(nameof(query), query);
+            if (client == null) throw new ArgumentNullException(nameof(client));
+            if (string.IsNullOrWhiteSpace(query)) throw new ArgumentNullException(nameof(query));
             query = CompressQuery(query);
             var body = new
             {
@@ -38,8 +38,8 @@ namespace GraphQL.EntityFramework.Testing
 
         public static Task<HttpResponseMessage> ExecuteGet(HttpClient client, string query, object variables = null, Action<HttpHeaders> headerAction = null)
         {
-            Guard.AgainstNull(nameof(client), client);
-            Guard.AgainstNullWhiteSpace(nameof(query), query);
+            if (client == null) throw new ArgumentNullException(nameof(client));
+            if (string.IsNullOrWhiteSpace(query)) throw new ArgumentNullException(nameof(query));
             var compressed = CompressQuery(query);
             var variablesString = ToJson(variables);
             var getUri = $"{uri}?query={compressed}&variables={variablesString}";

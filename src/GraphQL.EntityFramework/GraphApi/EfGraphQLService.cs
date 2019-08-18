@@ -17,10 +17,9 @@ namespace GraphQL.EntityFramework
 
         public EfGraphQLService(IModel model, GlobalFilters filters, DbContextFromUserContext<TDbContext> dbContextFromUserContext)
         {
-            Guard.AgainstNull(nameof(model), model);
-            Guard.AgainstNull(nameof(dbContextFromUserContext), dbContextFromUserContext);
+            if (model == null) throw new ArgumentNullException(nameof(model));
             this.filters = filters;
-            this.dbContextFromUserContext = dbContextFromUserContext;
+            this.dbContextFromUserContext = dbContextFromUserContext ?? throw new ArgumentNullException(nameof(dbContextFromUserContext));
             foreach (var entityType in model.GetEntityTypes())
             {
                 var primaryKey = entityType.FindPrimaryKey();

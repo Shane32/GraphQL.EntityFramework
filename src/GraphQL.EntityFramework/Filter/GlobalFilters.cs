@@ -17,7 +17,7 @@ namespace GraphQL.EntityFramework
 
         public void Add<T>(Filter<T> filter)
         {
-            Guard.AgainstNull(nameof(filter), filter);
+            if (filter == null) throw new ArgumentNullException(nameof(filter));
             funcs[typeof(T)] =
                 (context, item) =>
                 {
@@ -34,7 +34,7 @@ namespace GraphQL.EntityFramework
 
         public void Add<T>(AsyncFilter<T> filter)
         {
-            Guard.AgainstNull(nameof(filter), filter);
+            if (filter == null) throw new ArgumentNullException(nameof(filter));
             funcs[typeof(T)] =
                 async (context, item) =>
                 {

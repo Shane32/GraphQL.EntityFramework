@@ -9,9 +9,8 @@ namespace GraphQL.EntityFramework
     {
         public static IEnumerable<TItem> ApplyGraphQlArguments<TItem, TSource>(this IEnumerable<TItem> items, ResolveFieldContext<TSource> context)
         {
-            Guard.AgainstNull(nameof(items), items);
-            Guard.AgainstNull(nameof(context), context);
-            return ApplyToAll(items, (type, x) => context.GetArgument(type, x));
+            if (context == null) throw new ArgumentNullException(nameof(context));
+            return ApplyToAll(items ?? throw new ArgumentNullException(nameof(items)), (type, x) => context.GetArgument(type, x));
         }
 
         static IEnumerable<TItem> ApplyToAll<TItem>(this IEnumerable<TItem> items, Func<Type, string, object> getArguments)

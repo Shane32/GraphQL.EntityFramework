@@ -1,5 +1,6 @@
 ﻿using GraphQL.Execution;
 using GraphQL.Language.AST;
+using System;
 
 namespace GraphQL.EntityFramework
 {
@@ -8,7 +9,7 @@ namespace GraphQL.EntityFramework
     {
         protected override IExecutionStrategy SelectExecutionStrategy(ExecutionContext context)
         {
-            Guard.AgainstNull(nameof(context), context);
+            if (context == null) throw new ArgumentNullException(nameof(context));
             if (context.Operation.OperationType == OperationType.Query)
             {
                 return new SerialExecutionStrategy();

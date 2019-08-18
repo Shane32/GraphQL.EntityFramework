@@ -15,8 +15,7 @@ namespace GraphQL.EntityFramework
 
         public QueryGraphType(IEfGraphQLService<TDbContext> efGraphQlService)
         {
-            Guard.AgainstNull(nameof(efGraphQlService), efGraphQlService);
-            this.efGraphQlService = efGraphQlService;
+            this.efGraphQlService = efGraphQlService ?? throw new ArgumentNullException(nameof(efGraphQlService));
         }
 
         protected void AddQueryConnectionField<TReturn>(

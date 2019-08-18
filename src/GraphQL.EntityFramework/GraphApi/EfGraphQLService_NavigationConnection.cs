@@ -21,7 +21,7 @@ namespace GraphQL.EntityFramework
             int pageSize = 10)
             where TReturn : class
         {
-            Guard.AgainstNull(nameof(graph), graph);
+            if (graph == null) throw new ArgumentNullException(nameof(graph));
             //build the connection field
             var connection = BuildListConnectionField(name, resolve, includeNames, pageSize, graphType);
             //add the field to the graph
@@ -38,9 +38,9 @@ namespace GraphQL.EntityFramework
             Type graphType)
             where TReturn : class
         {
-            Guard.AgainstNullWhiteSpace(nameof(name), name);
-            Guard.AgainstNull(nameof(resolve), resolve);
-            Guard.AgainstNegative(nameof(pageSize), pageSize);
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentNullException(nameof(name));
+            if (resolve == null) throw new ArgumentNullException(nameof(resolve));
+            if (pageSize < 0) throw new ArgumentOutOfRangeException(nameof(pageSize));
 
             //lookup the graph type if not explicitly specified
             graphType = graphType ?? GraphTypeFinder.FindGraphType<TReturn>();

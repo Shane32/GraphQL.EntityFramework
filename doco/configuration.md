@@ -51,6 +51,7 @@ To avoid this a custom implementation of `DocumentExecuter` but be used that use
 ```cs
 using GraphQL.Execution;
 using GraphQL.Language.AST;
+using System;
 
 namespace GraphQL.EntityFramework
 {
@@ -59,7 +60,7 @@ namespace GraphQL.EntityFramework
     {
         protected override IExecutionStrategy SelectExecutionStrategy(ExecutionContext context)
         {
-            Guard.AgainstNull(nameof(context), context);
+            if (context == null) throw new ArgumentNullException(nameof(context));
             if (context.Operation.OperationType == OperationType.Query)
             {
                 return new SerialExecutionStrategy();
@@ -69,7 +70,7 @@ namespace GraphQL.EntityFramework
     }
 }
 ```
-<sup>[snippet source](/src/GraphQL.EntityFramework/EfDocumentExecuter.cs#L1-L19)</sup>
+<sup>[snippet source](/src/GraphQL.EntityFramework/EfDocumentExecuter.cs#L1-L20)</sup>
 <!-- endsnippet -->
 
 
@@ -670,9 +671,7 @@ Wraps the `DocumentExecuter.ExecuteAsync` to throw if there are any errors.
 ```cs
 public static async Task<ExecutionResult> ExecuteWithErrorCheck(this IDocumentExecuter documentExecuter, ExecutionOptions executionOptions)
 {
-    Guard.AgainstNull(nameof(documentExecuter), documentExecuter);
-    Guard.AgainstNull(nameof(executionOptions), executionOptions);
-    var executionResult = await documentExecuter.ExecuteAsync(executionOptions);
+    var executionResult = await (documentExecuter ?? throw new ArgumentNullException(nameof(documentExecuter))).ExecuteAsync(executionOptions ?? throw new ArgumentNullException(nameof(executionOptions)));
 
     var errors = executionResult.Errors;
     if (errors != null && errors.Count > 0)
@@ -688,5 +687,5 @@ public static async Task<ExecutionResult> ExecuteWithErrorCheck(this IDocumentEx
     return executionResult;
 }
 ```
-<sup>[snippet source](/src/GraphQL.EntityFramework/GraphQlExtensions.cs#L9-L31)</sup>
+<sup>[snippet source](/src/GraphQL.EntityFramework/GraphQlExtensions.cs#L9-L29)</sup>
 <!-- endsnippet -->

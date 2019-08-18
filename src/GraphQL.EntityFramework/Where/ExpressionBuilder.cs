@@ -8,7 +8,7 @@ namespace GraphQL.EntityFramework
     {
         public static Expression<Func<T, bool>> BuildPredicate(WhereExpression where)
         {
-            Guard.AgainstNull(nameof(where), where);
+            if (where == null) throw new ArgumentNullException(nameof(where));
             return BuildPredicate(where.Path, where.Comparison.GetValueOrDefault(), where.Value, where.Case);
         }
 

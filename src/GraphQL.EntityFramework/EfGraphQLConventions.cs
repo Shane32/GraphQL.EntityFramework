@@ -17,9 +17,9 @@ namespace GraphQL.EntityFramework
             where TDbContext : DbContext
         #endregion
         {
-            Guard.AgainstNull(nameof(register), register);
-            Guard.AgainstNull(nameof(dbContextFromUserContext), dbContextFromUserContext);
-            Guard.AgainstNull(nameof(dbContext), dbContext);
+            if (register == null) throw new ArgumentNullException(nameof(register));
+            if (dbContextFromUserContext == null) throw new ArgumentNullException(nameof(dbContextFromUserContext));
+            if (dbContext == null) throw new ArgumentNullException(nameof(dbContext));
             Scalars.RegisterInContainer(register);
             ArgumentGraphs.RegisterInContainer(register);
 
@@ -41,8 +41,8 @@ namespace GraphQL.EntityFramework
             where TDbContext : DbContext
         #endregion
         {
-            Guard.AgainstNull(nameof(services), services);
-            Guard.AgainstNull(nameof(dbContext), dbContext);
+            if (services == null) throw new ArgumentNullException(nameof(services));
+            if (dbContext == null) throw new ArgumentNullException(nameof(dbContext));
             RegisterInContainer((type, instance) => { services.AddSingleton(type, instance); }, dbContext, dbContextFromUserContext, filters);
         }
 
@@ -63,7 +63,7 @@ namespace GraphQL.EntityFramework
             where TDbContext : DbContext
         #endregion
         {
-            Guard.AgainstNull(nameof(services), services);
+            if (services == null) throw new ArgumentNullException(nameof(services));
             //acquire the database model via the service provider
             //default implmentation is below, but can be tailored by the caller
             if (dbModelCreator == null)
@@ -93,7 +93,7 @@ namespace GraphQL.EntityFramework
 
         public static void RegisterConnectionTypesInContainer(IServiceCollection services)
         {
-            Guard.AgainstNull(nameof(services), services);
+            if (services == null) throw new ArgumentNullException(nameof(services));
             services.AddTransient(typeof(ConnectionType<>));
             services.AddTransient(typeof(EdgeType<>));
             services.AddSingleton<PageInfoType>();
@@ -101,7 +101,7 @@ namespace GraphQL.EntityFramework
 
         public static void RegisterConnectionTypesInContainer(Action<Type> register)
         {
-            Guard.AgainstNull(nameof(register), register);
+            if (register == null) throw new ArgumentNullException(nameof(register));
             register(typeof(ConnectionType<>));
             register(typeof(EdgeType<>));
             register(typeof(PageInfoType));
