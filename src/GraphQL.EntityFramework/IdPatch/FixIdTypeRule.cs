@@ -6,6 +6,11 @@ using GraphQL.Validation;
 
 namespace GraphQL.EntityFramework
 {
+    //when executing a query with a variable against an ID field, typically you must
+    //  define the variable type as ID or else graphql will throw an exception
+    //this patch will automatically change a variable's data type from string to ID
+    //  in this situation.  this allows you to skip defining the variable's data type
+    //  for ID fields
     public class FixIdTypeRule :
         IValidationRule
     {
@@ -14,6 +19,8 @@ namespace GraphQL.EntityFramework
 
         static FixIdTypeRule()
         {
+            //automatically add this rule to the graphql base rule set (???)
+            //or, maybe this just initializes the static field in case anyone wants to use it
             validationRules = DocumentValidator.CoreRules();
             validationRules.Insert(0, new FixIdTypeRule());
         }
