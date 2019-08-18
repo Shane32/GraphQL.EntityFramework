@@ -19,8 +19,7 @@ namespace GraphQL.EntityFramework
 
         static FixIdTypeRule()
         {
-            //automatically add this rule to the graphql base rule set (???)
-            //or, maybe this just initializes the static field in case anyone wants to use it
+            //initialize a static field in case anyone wants to use it without creating a list
             validationRules = DocumentValidator.CoreRules();
             validationRules.Insert(0, new FixIdTypeRule());
         }
