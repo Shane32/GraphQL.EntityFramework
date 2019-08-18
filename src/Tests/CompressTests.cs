@@ -1,5 +1,5 @@
 ﻿using ApprovalTests;
-using GraphQL.EntityFramework;
+using GraphQL.EntityFramework.Testing;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -17,7 +17,7 @@ query ($id: String!)
     id
   }
 }";
-        Approvals.Verify(Compress.Query(query));
+        Approvals.Verify(ClientQueryExecutor.CompressQuery(query));
     }
 
     public CompressTests(ITestOutputHelper output) :

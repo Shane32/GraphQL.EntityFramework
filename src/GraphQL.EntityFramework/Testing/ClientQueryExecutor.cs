@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -57,9 +58,10 @@ namespace GraphQL.EntityFramework.Testing
             return JsonConvert.SerializeObject(target);
         }
 
-        static string CompressQuery(string query)
+        public static string CompressQuery(string query)
         {
-            return Compress.Query(query);
+            query = Regex.Replace(query ?? throw new ArgumentNullException(nameof(query)), @"\s+", " ");
+            return Regex.Replace(query, @"\s*(\[|\]|\{|\}|\(|\)|:|\,)\s*", "$1");
         }
     }
 }
