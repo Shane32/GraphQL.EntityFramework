@@ -12,7 +12,7 @@ namespace GraphQL.EntityFramework
         public static void RegisterInContainer<TDbContext>(
             Action<Type, object> register,
             TDbContext dbContext,
-            DbContextFromUserContext<TDbContext> dbContextFromUserContext,
+            Func<object, TDbContext> dbContextFromUserContext,
             GlobalFilters filters = null)
             where TDbContext : DbContext
         #endregion
@@ -36,7 +36,7 @@ namespace GraphQL.EntityFramework
         public static void RegisterInContainer<TDbContext>(
             IServiceCollection services,
             TDbContext dbContext,
-            DbContextFromUserContext<TDbContext> dbContextFromUserContext,
+            Func<object, TDbContext> dbContextFromUserContext,
             GlobalFilters filters = null)
             where TDbContext : DbContext
         #endregion
@@ -57,7 +57,7 @@ namespace GraphQL.EntityFramework
         #region RegisterInContainerViaServiceProvider
         public static void RegisterInContainer<TDbContext>(
             IServiceCollection services,
-            DbContextFromUserContext<TDbContext> dbContextFromUserContext,
+            Func<object, TDbContext> dbContextFromUserContext,
             Func<IServiceProvider, IModel> dbModelCreator = null,
             Func<IServiceProvider, GlobalFilters> filters = null)
             where TDbContext : DbContext

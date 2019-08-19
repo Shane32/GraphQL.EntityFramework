@@ -12,10 +12,10 @@ namespace GraphQL.EntityFramework
         where TDbContext : DbContext
     {
         GlobalFilters filters;
-        DbContextFromUserContext<TDbContext> dbContextFromUserContext;
+        Func<object, TDbContext> dbContextFromUserContext;
         Dictionary<Type, List<string>> keyNames = new Dictionary<Type, List<string>>();
 
-        public EfGraphQLService(IModel model, GlobalFilters filters, DbContextFromUserContext<TDbContext> dbContextFromUserContext)
+        public EfGraphQLService(IModel model, GlobalFilters filters, Func<object, TDbContext> dbContextFromUserContext)
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
             this.filters = filters;
