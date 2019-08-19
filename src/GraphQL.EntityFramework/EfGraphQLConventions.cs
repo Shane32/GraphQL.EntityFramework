@@ -8,43 +8,6 @@ namespace GraphQL.EntityFramework
 {
     public static class EfGraphQLConventions
     {
-        #region RegisterInContainerAction
-        public static void RegisterInContainer<TDbContext>(
-            Action<Type, object> register,
-            TDbContext dbContext,
-            Func<object, TDbContext> dbContextFromUserContext,
-            GlobalFilters filters = null)
-            where TDbContext : DbContext
-        #endregion
-        {
-            if (register == null) throw new ArgumentNullException(nameof(register));
-            if (dbContextFromUserContext == null) throw new ArgumentNullException(nameof(dbContextFromUserContext));
-            if (dbContext == null) throw new ArgumentNullException(nameof(dbContext));
-            Scalars.RegisterInContainer(register);
-            ArgumentGraphs.RegisterInContainer(register);
-
-            if (filters == null)
-            {
-                filters = new GlobalFilters();
-            }
-
-            var service = new EfGraphQLService<TDbContext>(dbContext.Model, filters,dbContextFromUserContext);
-            register(typeof(IEfGraphQLService<TDbContext>), service);
-        }
-
-        #region RegisterInContainerServiceCollection
-        public static void RegisterInContainer<TDbContext>(
-            IServiceCollection services,
-            TDbContext dbContext,
-            Func<object, TDbContext> dbContextFromUserContext,
-            GlobalFilters filters = null)
-            where TDbContext : DbContext
-        #endregion
-        {
-            if (services == null) throw new ArgumentNullException(nameof(services));
-            if (dbContext == null) throw new ArgumentNullException(nameof(dbContext));
-            RegisterInContainer((type, instance) => { services.AddSingleton(type, instance); }, dbContext, dbContextFromUserContext, filters);
-        }
 
         /// <summary>
         /// Register the necessary services with the service provider for a data context of type TDbContext
@@ -99,12 +62,5 @@ namespace GraphQL.EntityFramework
             services.AddSingleton<PageInfoType>();
         }
 
-        public static void RegisterConnectionTypesInContainer(Action<Type> register)
-        {
-            if (register == null) throw new ArgumentNullException(nameof(register));
-            register(typeof(ConnectionType<>));
-            register(typeof(EdgeType<>));
-            register(typeof(PageInfoType));
-        }
     }
 }

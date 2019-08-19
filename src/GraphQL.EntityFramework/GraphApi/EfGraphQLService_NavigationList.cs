@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using GraphQL.Resolvers;
 using GraphQL.Types;
 using Microsoft.EntityFrameworkCore;
@@ -73,7 +74,7 @@ namespace GraphQL.EntityFramework
                         //apply any query filters specified in the arguments
                         result = result.ApplyGraphQlArguments(context);
                         //apply the global filter on each individually enumerated item
-                        return filters.ApplyFilter(result, context.UserContext);
+                        return filters == null ? Task.FromResult(result) : filters.ApplyFilter(result, context.UserContext);
                     })
             };
         }

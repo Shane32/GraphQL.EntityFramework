@@ -168,7 +168,7 @@ static class ConnectionConverter
             page = page.Reverse();
         }
         IEnumerable<TItem> result = await page.ToListAsync(cancellation);
-        result = await filters.ApplyFilter(result, context.UserContext);
+        result = filters == null ? result : await filters.ApplyFilter(result, context.UserContext);
 
         cancellation.ThrowIfCancellationRequested();
         return Build(skip, take, count, result);

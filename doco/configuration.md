@@ -15,23 +15,23 @@ The container registration can be via addin to a [IServiceCollection](https://do
 ```cs
 public static void RegisterInContainer<TDbContext>(
     IServiceCollection services,
-    DbContextFromUserContext<TDbContext> dbContextFromUserContext,
+    Func<object, TDbContext> dbContextFromUserContext,
     Func<IServiceProvider, IModel> dbModelCreator = null,
     Func<IServiceProvider, GlobalFilters> filters = null)
     where TDbContext : DbContext
 ```
-<sup>[snippet source](/src/GraphQL.EntityFramework/EfGraphQLConventions.cs#L57-L64)</sup>
+<sup>[snippet source](/src/GraphQL.EntityFramework/EfGraphQLConventions.cs#L20-L27)</sup>
 <!-- endsnippet -->
 
 Usage:
 
 <!-- snippet: RegisterInContainerViaServiceProviderUsage -->
 ```cs
-EfGraphQLConventions.RegisterInContainer<MyDbContext>(
+EfGraphQLConventions.RegisterInContainer(
     serviceCollection,
     userContext => (MyDbContext)userContext);
 ```
-<sup>[snippet source](/src/Snippets/Configuration.cs#L26-L30)</sup>
+<sup>[snippet source](/src/Snippets/Configuration.cs#L9-L13)</sup>
 <!-- endsnippet -->
 
 Configuration requires an instance of `Microsoft.EntityFrameworkCore.Metadata.IModel`.  By default, this will be obtained from an instance of TDbContext at runtime, created by the service provider upon first use of IEfGraphQLService.  By supplying a function to the RegisterInContainer method, you can supply your own instance of IModel.
@@ -271,14 +271,12 @@ Register both DbContext types in the container and include how those instance ca
 ```cs
 EfGraphQLConventions.RegisterInContainer(
     services,
-    dbContext1,
-    userContext => ((UserContext) userContext).DbContext1);
+    userContext => ((UserContext)userContext).DbContext1);
 EfGraphQLConventions.RegisterInContainer(
     services,
-    dbContext2,
-    userContext => ((UserContext) userContext).DbContext2);
+    userContext => ((UserContext)userContext).DbContext2);
 ```
-<sup>[snippet source](/src/Tests/MultiContextTests/MultiContextTests.cs#L70-L79)</sup>
+<sup>[snippet source](/src/Tests/MultiContextTests/MultiContextTests.cs#L72-L79)</sup>
 <!-- endsnippet -->
 
 

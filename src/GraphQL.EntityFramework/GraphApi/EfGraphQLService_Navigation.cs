@@ -47,7 +47,7 @@ namespace GraphQL.EntityFramework
                     //run resolve function
                     var result = resolve(BuildEfContextFromGraphQlContext(context));
                     //apply global filters and return null if necessary
-                    if (await filters.ShouldInclude(context.UserContext, result))
+                    if (filters == null || await filters.ShouldInclude(context.UserContext, result))
                     {
                         return result;
                     }

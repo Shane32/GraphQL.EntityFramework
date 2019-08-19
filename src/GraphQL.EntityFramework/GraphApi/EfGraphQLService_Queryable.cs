@@ -126,7 +126,7 @@ namespace GraphQL.EntityFramework
                         //query the database
                         var list = await withArguments.ToListAsync(context.CancellationToken);
                         //apply the global filter on each individually enumerated item
-                        return await filters.ApplyFilter(list, context.UserContext);
+                        return filters == null ? list : await filters.ApplyFilter(list, context.UserContext);
                     })
             };
         }

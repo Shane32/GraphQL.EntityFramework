@@ -62,7 +62,7 @@ namespace GraphQL.EntityFramework
                 //apply any query filters specified in the arguments
                 enumerable = enumerable.ApplyGraphQlArguments(context);
                 //apply the global filter on each individually enumerated item
-                enumerable = await filters.ApplyFilter(enumerable, context.UserContext);
+                if (filters != null) enumerable = await filters.ApplyFilter(enumerable, context.UserContext);
                 //pagination does NOT occur server-side at this point, as the query has already executed
                 var page = enumerable.ToList();
                 //return the proper page of data

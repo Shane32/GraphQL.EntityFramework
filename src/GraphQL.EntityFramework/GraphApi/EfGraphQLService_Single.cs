@@ -129,7 +129,7 @@ namespace GraphQL.EntityFramework
                         //apply global filters to the returned value
                         if (single != null)
                         {
-                            if (await filters.ShouldInclude(context.UserContext, single))
+                            if (filters == null || await filters.ShouldInclude(context.UserContext, single))
                             {
                                 return single;
                             }

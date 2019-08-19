@@ -52,9 +52,8 @@ filters.Add<MyEntity>(
     (userContext, item) => { return item.Property != "Ignore"; });
 EfGraphQLConventions.RegisterInContainer(
     services,
-    dbContext,
-    userContext => (MyDbContext) userContext,
-    filters);
+    userContext => (MyDbContext)userContext,
+    filters: serviceProvider => filters);
 ```
-<sup>[snippet source](/src/Snippets/GlobalFilterSnippets.cs#L18-L29)</sup>
+<sup>[snippet source](/src/Snippets/GlobalFilterSnippets.cs#L18-L28)</sup>
 <!-- endsnippet -->
