@@ -27,21 +27,30 @@ namespace GraphQL.EntityFramework.GraphApi
                     $"on parent GraphQL type: '{graph.Name ?? graph.GetType().Name}'.");
             }
 
-            //return EfField(graph, name, expression, nullable, graphType);
-            return EfField(graph, name, context => Task.FromResult(expression), nullable, graphType);
+            return EfField(graph, name, expression, nullable, graphType);
         }
 
         public static Builders.FieldBuilder<IDictionary<string, object>, TProperty> EfField<TDbContext, TSource, TProperty>(this IEfGraph<TDbContext, TSource> graph, string name, Expression<Func<TSource, TProperty>> expression, bool nullable = false, Type graphType = null) where TDbContext : DbContext where TSource : class
         {
-            return EfField<TDbContext, TSource, TProperty>(graph, name, (LambdaExpression)expression, nullable, graphType);
+            return EfFieldFromContext<TDbContext, TSource, TProperty>(graph, name, context => (LambdaExpression)expression, nullable, graphType);
         }
 
         public static Builders.FieldBuilder<IDictionary<string, object>, TReturn> EfField<TDbContext, TSource, TReturn>(this IEfGraph<TDbContext, TSource> graph, string name, Expression<Func<TDbContext, TSource, TReturn>> expression, bool nullable = false, Type graphType = null) where TDbContext : DbContext where TSource : class
         {
-            return EfField<TDbContext, TSource, TReturn>(graph, name, (LambdaExpression)expression, nullable, graphType);
+            return EfFieldFromContext<TDbContext, TSource, TReturn>(graph, name, context => (LambdaExpression)expression, nullable, graphType);
         }
 
-        private static Builders.FieldBuilder<IDictionary<string, object>, TReturn> EfField<TDbContext, TSource, TReturn>(this IEfGraph<TDbContext, TSource> graph, string name, Func<ResolveEfFieldContext<TDbContext, TSource>, LambdaExpression> expression, bool nullable = false, Type graphType = null) where TDbContext : DbContext where TSource : class
+        public static Builders.FieldBuilder<IDictionary<string, object>, TReturn> EfFieldFromContext<TDbContext, TSource, TReturn>(this IEfGraph<TDbContext, TSource> graph, string name, Func<ResolveEfFieldContext<TDbContext, TSource>, Expression<Func<TSource, TReturn>>> resolveExpression, bool nullable = false, Type graphType = null) where TDbContext : DbContext where TSource : class
+        {
+            return EfFieldFromContext<TDbContext, TSource, TReturn>(graph, name, context => (LambdaExpression)resolveExpression(context), nullable, graphType);
+        }
+
+        public static Builders.FieldBuilder<IDictionary<string, object>, TReturn> EfFieldFromContext<TDbContext, TSource, TReturn>(this IEfGraph<TDbContext, TSource> graph, string name, Func<ResolveEfFieldContext<TDbContext, TSource>, Expression<Func<TDbContext, TSource, TReturn>>> resolveExpression, bool nullable = false, Type graphType = null) where TDbContext : DbContext where TSource : class
+        {
+            return EfFieldFromContext<TDbContext, TSource, TReturn>(graph, name, context => (LambdaExpression)resolveExpression(context), nullable, graphType);
+        }
+
+        private static Builders.FieldBuilder<IDictionary<string, object>, TReturn> EfFieldFromContext<TDbContext, TSource, TReturn>(this IEfGraph<TDbContext, TSource> graph, string name, Func<ResolveEfFieldContext<TDbContext, TSource>, LambdaExpression> expression, bool nullable = false, Type graphType = null) where TDbContext : DbContext where TSource : class
         {
             //obtain the type
             try
@@ -113,18 +122,19 @@ namespace GraphQL.EntityFramework.GraphApi
             return builder;
         }
 
-        public static Builders.FieldBuilder<IDictionary<string, object>, IEnumerable<TProperty>> EfQueryField<TDbContext, TSource, TProperty>(this IEfGraph<TDbContext, TSource> graph, Expression<Func<TSource, IEnumerable<TProperty>>> expression, Type graphType = null) where TDbContext : DbContext where TSource : class
+        public static Builders.FieldBuilder<IDictionary<string, object>, IEnumerable<TProperty>> EfQueryField<TDbContext, TSource, TProperty>(this IEfGraph<TDbContext, TSource> graph, Expression<Func<TSource, IEnumerable<TProperty>>> expression, Type graphType = null, IEnumerable<QueryArgument> arguments = null) where TDbContext : DbContext where TSource : class
         {
             var builder = EfField(graph, expression, false, graphType);
             builder.FieldType.SetEFQueryMetadata(true);
+            builder.FieldType.AddWhereArgument(arguments);
             return builder;
         }
 
-        public static Builders.FieldBuilder<IDictionary<string, object>, IEnumerable<TProperty>> EfQueryField<TDbContext, TSource, TProperty>(this IEfGraph<TDbContext, TSource> graph, string name, Expression<Func<TSource, IEnumerable<TProperty>>> expression, bool nullable = false, Type graphType = null, ) where TDbContext : DbContext where TSource : class
+        public static Builders.FieldBuilder<IDictionary<string, object>, IEnumerable<TProperty>> EfQueryField<TDbContext, TSource, TProperty>(this IEfGraph<TDbContext, TSource> graph, string name, Expression<Func<TDbContext, TSource, IEnumerable<TProperty>>> expression, Type graphType = null, IEnumerable<QueryArgument> arguments = null) where TDbContext : DbContext where TSource : class
         {
-            var builder = EfField(graph, name, expression, nullable, graphType);
-            builder.FieldType.AddWhereArgument();
+            var builder = EfField(graph, name, expression, false, graphType);
             builder.FieldType.SetEFQueryMetadata(true);
+            builder.FieldType.AddWhereArgument(arguments);
             return builder;
         }
 
